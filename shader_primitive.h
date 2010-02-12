@@ -7,7 +7,6 @@
 #include <GL/glew.h>
 
 #include "primitive.h"
-#include "screen.h"
 #include "color.h"
 
 using namespace std;

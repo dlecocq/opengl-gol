@@ -40,13 +40,12 @@ namespace glot {
 			};
 			
 			/** Display-list generator
-			  * \param s - the screen specs of the plot
 			  *
 			  * Generates a screen-filling quad that serves
 			  * as the canvas for the fragment shader to do
 			  * its thing.
 			  */
-			void dl_gen(const screen& s);
+			void dl_gen(float minx, float maxx, float miny, float maxy);
 		
 			/** Shader generator
 				* 

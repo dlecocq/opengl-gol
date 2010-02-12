@@ -9,21 +9,7 @@ using namespace glot;
 
 int counter = 0;
 
-quad::point* points = (quad::point*) malloc(4 * sizeof(quad::point));
-
 color c(1.0, 0.0, 0.0, 0.5);
-
-void click_function(GLint button, GLint x, GLint y) {
-	points[counter].x = grapher::get_x_coord(x);
-	points[counter].y = grapher::get_y_coord(y);
-	counter += 1;
-	if (counter == 4) {
-		cout << "Adding a new quad" << endl;
-		quad * q = new quad(points, color(1.0, 0.0, 0.0));
-		grapher::add(*q);
-		counter = 0;
-	}
-}
 
 int main(int argc, char ** argv) {
 	
@@ -33,7 +19,6 @@ int main(int argc, char ** argv) {
 
 	scalar_field sfp;
 	grapher::pde = &sfp;
-	grapher::set_click_function(click_function);
 	grapher::set_idle_function(grapher::redraw);
 	grapher::run();
 	

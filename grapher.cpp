@@ -15,10 +15,6 @@ int grapher::initialize(int argc, char ** argv, short int options, short int k_o
 	display_options = options;
 	keyboard_options = k_options;
 	
-	// Initialize bounds
-	scr.minx = scr.miny = -1;
-	scr.maxx = scr.maxy = 1;
-	
 	// Initialize GLUT
 	glutInit(&argc, argv);
 	
@@ -26,14 +22,14 @@ int grapher::initialize(int argc, char ** argv, short int options, short int k_o
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
 	
 	// Width and height of plot
-	scr.width  = width  = glutGet(GLUT_SCREEN_WIDTH);
-	scr.height = height = glutGet(GLUT_SCREEN_HEIGHT) - 100;
+	width  = glutGet(GLUT_SCREEN_WIDTH);
+	height = glutGet(GLUT_SCREEN_HEIGHT) - 100;
 	// Set the window size and position
-	glutInitWindowSize(scr.width, scr.height);
+	glutInitWindowSize(width, height);
 	glutInitWindowPosition(0, 0);
 	
 	// Title the window
-	glutCreateWindow("Glot");
+	glutCreateWindow("Game of Life");
 	
 	// Initialize OpenGL
 	init_open_gl();
@@ -42,28 +38,13 @@ int grapher::initialize(int argc, char ** argv, short int options, short int k_o
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
-	glutMouseFunc(mouse);
-	glutMotionFunc(motion);
 	//glutIdleFunc(idle);
 	
-	// Determine the axes and grid
-	axes_dl = axes_dl_gen();
-	grid_dl = grid_dl_gen();
-	
 	glewInit();
-	/*
-	if (glewIsSupported("GL_VERSION_2_1"))
-		printf("Ready for OpenGL 2.1\n");
-	else {
-		printf("OpenGL 2.1 not supported\n");
-		exit(1);
-	}
-	*/
 	
-	if (!(GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader &&
-				GLEW_EXT_geometry_shader4 && GLEW_EXT_framebuffer_object &&
-				GLEW_ARB_texture_float)) {
-		printf("Not totally ready :( \n");
+	if (!(GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader && 
+				GLEW_EXT_framebuffer_object && GLEW_ARB_texture_float)) {
+		printf("Not all necessary features are supported :( \n");
 		exit(1);
 	}
 	
@@ -206,7 +187,7 @@ void grapher::calculate() {
 	pde->set_param("wtime", wall.time());
 	
 	glUseProgram(pde->pc);
-	pde->dl_gen(scr);
+	pde->dl_gen(-1, 1, -1, 1);
 	
 	// Swap the two textures for next iteration
 	tmp = render;
@@ -222,10 +203,6 @@ void grapher::display() {
 		init_framebuffer();
 	}
 	
-	//glClear(GL_COLOR_BUFFER_BIT);
-	
-	scr.time = wall.time();
-	
 	calculate();
 	
 	//if (framecount == 0) {
@@ -237,7 +214,7 @@ void grapher::display() {
 			// Draw the damned thing
 			glUseProgram(it->first->pc);
 			//glCallList(it->second);
-			it->first->dl_gen(scr);
+			it->first->dl_gen(-1, 1, -1, 1);
 		}
 	
 		// Bind the display framebuffer to render the results
@@ -247,7 +224,7 @@ void grapher::display() {
 		// I don't understand why I have to use this pr, and can't use 0 :-/
 		glUseProgram(pde->pr);
 		//glUseProgram(0);
-		pde->dl_gen(scr);
+		pde->dl_gen(-1, 1, -1, 1);
 	//}
 	
 	glUseProgram(0);
@@ -318,63 +295,10 @@ GLvoid grapher::keyboard(unsigned char key, int x, int y) {
 	}
 }
 
-// Our mouse funciton, registered with OpenGL
-void grapher::mouse(int button, int state, int x, int y) {
-	
-	// If it's a mouse button being pressed down,
-	if (state == GLUT_DOWN) {
-		/** Set the x and y coordinates of the mouse where
-		  * it is now, so that when it comes up, we can check
-		  * if it has moved or not.  If not, then we raise a
-		  * click event.
-		  */
-		startx = x;
-		starty = y;
-	} else if (state == GLUT_UP) {
-		// See if the mouse has moved since it was pressed
-		double dx = get_x_coord(startx) - get_x_coord(x);
-		double dy = get_y_coord(starty) - get_y_coord(y);
-		
-		// If it has moved,
-		if (dx != 0 || dy != 0) {
-			// then translate the plot by the amount moved
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-			scr.minx += dx;
-			scr.maxx += dx;
-			scr.miny += dy;
-			scr.maxy += dy;
-			glOrtho(scr.minx, scr.maxx, scr.miny, scr.maxy, -10, 0);
-			glMatrixMode(GL_MODELVIEW);
-			glLoadIdentity();
-			startx = starty = -1;
-			refresh_dls();
-			glutPostRedisplay();
-		} else if (user_click_function) {
-			/** Otherwise (if the mouse has not moved), raise
-			  * a mouse click event.  If the user has defined
-			  * a click handler, call it.
-			  */
-			user_click_function(button, x, y);
-		}
-	}
-}
-
 void grapher::idle() {
 	if (user_idle_function != NULL) {
 		user_idle_function();
 	}
-}
-
-void grapher::motion(int x, int y) {
-	double dx = get_x_coord(startx) - get_x_coord(x);
-	double dy = get_y_coord(starty) - get_y_coord(y);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(scr.minx + dx, scr.maxx + dx, scr.miny + dy, scr.maxy + dy, -10, 0);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glutPostRedisplay();
 }
 
 void grapher::set_keyboard_function(keyboard_function k) {
@@ -389,87 +313,10 @@ void grapher::set_idle_function(idle_function i) {
 	glutIdleFunc(i);
 }
 
-void grapher::zoom(double scale) {
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	double diff = (scr.maxx - scr.minx) * scale / 2.0;
-	double mid = (scr.maxx + scr.minx) / 2.0;
-	scr.minx = mid - diff;
-	scr.maxx = mid + diff;
-	
-	diff = (scr.maxy - scr.miny) * scale / 2.0;
-	mid = (scr.maxy + scr.miny) / 2.0;
-	scr.miny = mid - diff;
-	scr.maxy = mid + diff;
-	
-	glOrtho(scr.minx, scr.maxx, scr.miny, scr.maxy, -10, 0);
-	//glViewPort()
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	
-	refresh_dls();
-	glutPostRedisplay();
-}
-
-double grapher::get_x_coord(GLint x) {
-	return scr.minx + (scr.maxx - scr.minx) * ((double)x / scr.width);
-}
-
-double grapher::get_y_coord(GLint y) {
-	return scr.maxy - (scr.maxy - scr.miny) * (double)y / scr.height;
-}
-
-GLint grapher::axes_dl_gen() {
-	GLint dl = glGenLists(1);
-	
-	glNewList(dl, GL_COMPILE);
-	
-		glColor4d(0.0, 0.0, 0.0, 1.0);
-		
-		glBegin(GL_LINES);
-		
-			glVertex3d(0, scr.miny, 0);
-			glVertex3d(0, scr.maxy, 0);
-			glVertex3d(scr.minx, 0, 0);
-			glVertex3d(scr.maxx, 0, 0);
-		
-		glEnd();
-	
-	glEndList();
-	
-	return dl;
-}
-
-GLint grapher::grid_dl_gen() {
-	GLint dl = glGenLists(1);
-	
-	glNewList(dl, GL_COMPILE);
-	
-		glColor4d(0.0, 0.0, 0.0, 0.14);
-	
-		glBegin(GL_LINES);
-		
-			for ( int i = (int)scr.miny; i <= (int)scr.maxy; ++i) {
-				glVertex3d(scr.minx, i, 1);
-				glVertex3d(scr.maxx, i, 1);
-			}
-	
-			for ( int i = (int) scr.minx; i <= scr.maxx; ++i) {
-				glVertex3d(i, scr.miny, 1);
-				glVertex3d(i, scr.maxy, 1);
-			}
-		
-		glEnd();
-		
-	glEndList();
-	
-	return dl;
-}
-
 void grapher::add(primitive& p) {
 	primitives[&p] = glGenLists(1);
 	glNewList(primitives[&p], GL_COMPILE);
-		(&p)->dl_gen(scr);
+		(&p)->dl_gen(-1, 1, -1, 1);
 	glEndList();
 }
 
@@ -479,16 +326,12 @@ void grapher::remove(primitive& p) {
 }
 
 void grapher::refresh_dls() {
-	
-	axes_dl = axes_dl_gen();
-	grid_dl = grid_dl_gen();
-	
 	map<primitive*, GLint>::iterator it;
 	for (it = primitives.begin(); it != primitives.end(); ++it) {
 		glDeleteLists(it->second, 1);
 		primitives[it->first] = glGenLists(1);
 		glNewList(primitives[it->first], GL_COMPILE);
-			(*it->first).dl_gen(scr);
+			(*it->first).dl_gen(-1, 1, -1, 1);
 		glEndList();
 	}
 }
@@ -508,40 +351,6 @@ double grapher::x_coord_transform(double x) {
 		return x;
 	}
 }
-
-//*
-double grapher::x_plot_coord(double x) {
-	if (X_LOG & display_options) {
-		return pow(10,x);
-	} else {
-		return x;
-	}
-}
-
-double grapher::x_screen_coord(double x) {
-	if (X_LOG & display_options) {
-		return log10(abs(x));
-	} else {
-		return x;
-	}
-}
-
-double grapher::y_plot_coord(double y) {
-	if (Y_LOG & display_options) {
-		return pow(10, y);
-	} else {
-		return y;
-	}
-}
-
-double grapher::y_screen_coord(double y) {
-	if (Y_LOG & display_options) {
-		return log10(abs(y));
-	} else {
-		return y;
-	}
-}
-//*/
 
 void grapher::refresh() {
 	// Delete this!
@@ -565,21 +374,12 @@ void grapher::run() {
 	glutMainLoop();
 }
 
-GLint grapher::get_width() {
-	return scr.width;
-}
-
-GLint grapher::get_height() {
-	return scr.height;
-}
-
 void grapher::get_pixels(char* values) {
-	glReadPixels(0, 0, scr.width, scr.height, GL_RGB, GL_UNSIGNED_BYTE, values);
+	glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, values);
 }
 
 // Static member variable definition
 // It's terribly ugly, I know
-screen grapher::scr;
 short int grapher::display_options;
 short int grapher::keyboard_options;
 GLint grapher::axes_dl;

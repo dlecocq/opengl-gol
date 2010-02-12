@@ -12,10 +12,7 @@
 #include "shader_primitive.h"
 #include "scalar_field.h"
 #include "stopwatch.h"
-#include "screen.h"
 #include "color.h"
-#include "curve.h"
-#include "quad.h"
 
 using namespace std;
 
@@ -167,36 +164,9 @@ namespace glot {
 			  * OpenGL's idle function to grapher's display function.
 			  */
 			static void set_idle_function(idle_function i);
-		
-			/**	\brief Zoom in / out by a scale
-			  *	\param scale - the scale by which to zoom
-			  *
-			  *	This determines the center of the plot as it is now, and
-			  * scales in / out by a factor of scale outward / inward from
-			  * that center point.
-			  */
-			static void zoom(double scale);
-		
-			/**	\brief Transform a screen x coordinate to a world one
-			  *	\param x - the screen x coordinate to transform
-			  *
-			  * It's the grapher's responsibility to know how to
-			  * transform a screen coordinate into a world coordinate
-			  * with this function.
-			  */
-			static double get_x_coord(GLint x);
-		
-			/**	\brief Transform a screen y coordinate to a world one
-			  * \param y - the screen y coordinate to transform
-			  * 
-			  *	It's the grapher's repsonsibility to know how to
-			  *	transform a screen coordinate into a world coordinate
-			  *	with this function.
-			  */
-			static double get_y_coord(GLint y);
 			
-			static GLint get_width();
-			static GLint get_height();
+			static GLint get_width()  { return width;  };
+			static GLint get_height() { return height; };
 			static void get_pixels(char* values);
 			
 			static primitive* pde;
@@ -239,31 +209,7 @@ namespace glot {
 			  */
 			static double x_coord_transform(double x);
 			
-			/**
-			  * I'm not sure if I'm going to keep these.  So,
-			  * probably best to not make use of these functions
-			  * just yet.
-			  */
-			//*
-			static double x_plot_coord(double x);
-			static double x_screen_coord(double x);
-			static double y_plot_coord(double y);
-			static double y_screen_coord(double y);
 			//*/
-		
-			/**	\brief Generate a display list for the axes
-			  *	
-			  *	For the current configuration, generate a display
-			  * list for the axes.
-			  */
-			static GLint axes_dl_gen();
-		
-			/**	\brief Generate a display list for the grid
-			  *
-			  *	For the current configuration, generate a display
-			  *	list for the grid.
-			  */
-			static GLint grid_dl_gen();
 		
 			/**	\brief Initialize OpenGL
 			  */
@@ -304,37 +250,8 @@ namespace glot {
 			  * that function AFTER it's done.
 			  */
 			static void keyboard(unsigned char key, int x, int y);
-		
-			/**	\brief Mouse event function
-			  *	\param button - the button pressed
-			  *	\param state - the state (UP / DOWN) of the button
-			  * \param x - the screen x coordinate of the mouse
-			  * \param y - the screen y coordinate of the mouse
-			  *
-			  * This function keeps track of where a mouse event begins
-			  * and where it ends, and if those are the same coordinates,
-			  * it registers it as a click.  In that event, it fires the
-			  * user-defined click-event-handler (if it's registered).
-			  *
-			  * In future versions, if the mouse clicks, moves, returns
-			  * to the original spot and releases, that will not be
-			  * registered as a click.
-			  */
-			static void mouse(int button, int state, int x, int y);
 			
 			static void idle();
-		
-			/**	\brief Motion event function
-			  *	\param x - the screen x coordinate of the mouse
-			  *	\param y - the screen y coordinate of the mouse
-			  *
-			  * This if the function this grapher registers with OpenGL
-			  * to handle motion events.  It will move the current plot
-			  * around the window, and when it stops, it will regenerate
-			  * the display lists for the elements for the new window
-			  * bounds, and then redraws the plot.
-			  */
-			static void motion(int x, int y);
 		
 			/**	\brief Regenerate all display lists
 			  *
@@ -358,8 +275,6 @@ namespace glot {
 			  *	GRID_KEYS_ON / GRID_KEYS_OFF
 			  */
 			static short int keyboard_options;
-			
-			static screen scr;
 
 			/** The display list for the axes */
 			static GLint axes_dl;

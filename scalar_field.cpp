@@ -8,17 +8,17 @@
 
 using namespace glot;
 
-void scalar_field::dl_gen(const screen& s) {
+void scalar_field::dl_gen(float minx, float maxx, float miny, float maxy) {
 	glBegin(GL_QUADS);
 		//*
 		glTexCoord2f(0, 0);
-			glVertex3f(s.minx, s.miny, -1);
+			glVertex3f(minx, miny, -1);
 		glTexCoord2f(0, 1);
-			glVertex3f(s.minx, s.maxy, -1);
+			glVertex3f(minx, maxy, -1);
 		glTexCoord2f(1, 1);
-			glVertex3f(s.maxx, s.maxy, -1);
+			glVertex3f(maxx, maxy, -1);
 		glTexCoord2f(1, 0);
-			glVertex3f(s.maxx, s.miny, -1);
+			glVertex3f(maxx, miny, -1);
 		//*/
 		/*
 		glTexCoord2f(0, 0);

@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-#include "screen.h"
 #include "color.h"
 
 namespace glot {
@@ -49,15 +48,8 @@ namespace glot {
 			virtual ~primitive() {};
 			
 			/** Display-list generator
-			  * \param s - the screen specs
-			  * 
-			  * The screen stores the dimensions of the plot, etc.
-			  * and based on that information, this function
-			  * generates the geometry for the primitive.  Typically
-			  * this might be stored in a display list, but that
-			  * is up to the container class, grapher
 			  */
-			virtual void dl_gen(const screen& s) = 0;
+			virtual void dl_gen(float minx, float maxx, float miny, float maxy) = 0;
 			
 			/** Shader program handle
 			  * 
