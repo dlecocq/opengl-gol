@@ -107,22 +107,6 @@ namespace glot {
 			  * then request a redraw with this function.
 			  */
 			static void redraw();
-
-			/** \brief Add a primitive to the plot
-			  * \param p - the primitive to add
-			  * 
-			  * Add any primitive that inherits from the primitive class
-			  * to the plot.  The only requirement is that dl_gen makes
-			  * the required OpenGL calls to render the geometry.
-			  */
-			static void add(primitive& p);
-			
-			/** \brief Remove a primitive from the plot
-			  * \param p - the primitive to remove
-			  * 
-			  * Remove a previously-added primitive from the plot
-			  */
-			static void remove(primitive& p);
 				
 			/** \brief Set up a keyboard event handler
 			  *	\param k - the function you'd like to handle key events
@@ -172,18 +156,6 @@ namespace glot {
 			static primitive* pde;
 
 		private:
-			
-			/** \brief Refresh all the display-lists
-			  *
-			  * Refreshes all the display lists.  This function is a 
-			  * candidate for deprecation because increasingly, the
-			  * primitives offload their work onto the graphics card
-			  * and so the number of static primitives they generate
-			  * is rather small.  Furthermore, it's reached a point
-			  * where compilation of display lists may actually be 
-			  * slowing down performance.
-			  */
-			static void refresh();
 		
 			/**	\brief Transform a y coordinate
 			  *	\param y - the y coordinate to transform
@@ -252,14 +224,6 @@ namespace glot {
 			static void keyboard(unsigned char key, int x, int y);
 			
 			static void idle();
-		
-			/**	\brief Regenerate all display lists
-			  *
-			  *	If the plot moves, or for whatever reason you need to 
-			  * recalculate all the display lists, you can call this
-			  * function.
-			  */
-			static void refresh_dls();
 
 			/** \brief The display options for the grapher
 			  *	

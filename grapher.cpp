@@ -109,20 +109,8 @@ void grapher::init_framebuffer() {
 
 	glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, fb);
 	
-	// Render buffer
-	/*
-	glGenRenderbuffersEXT(1, &depth_rb);
-  glBindRenderbufferEXT(GL_RENDERBUFFER, depth_rb);
-  glRenderbufferStorageEXT(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, size, size);
-	*/
-	
 	glGenFramebuffersEXT(1, &fb);
   glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, fb);
-	//glFramebufferTexture2DEXT(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ping, 0);
-  //glFramebufferRenderbufferEXT(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_rb);
-
-  // Check framebuffer completeness at the end of initialization.
-  //check_framebuffer();
 
 	initialized = true;
 }
@@ -184,7 +172,6 @@ void grapher::calculate() {
 	
 	// Check to make sure that the framebuffer ran correctly
 	check_framebuffer();
-	pde->set_param("wtime", wall.time());
 	
 	glUseProgram(pde->pc);
 	pde->dl_gen(-1, 1, -1, 1);
@@ -205,27 +192,14 @@ void grapher::display() {
 	
 	calculate();
 	
-	//if (framecount == 0) {
-		map<primitive*, GLint>::iterator it = primitives.begin();
-		// For every curve, ...
-		for (it = primitives.begin(); it != primitives.end(); ++it) {
-		
-			glColor3f(it->first->c.r, it->first->c.g, it->first->c.b);
-			// Draw the damned thing
-			glUseProgram(it->first->pc);
-			//glCallList(it->second);
-			it->first->dl_gen(-1, 1, -1, 1);
-		}
-	
-		// Bind the display framebuffer to render the results
-		glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, 0);
-		glBindTexture(GL_TEXTURE_2D, render);
-	
-		// I don't understand why I have to use this pr, and can't use 0 :-/
-		glUseProgram(pde->pr);
-		//glUseProgram(0);
-		pde->dl_gen(-1, 1, -1, 1);
-	//}
+	// Bind the display framebuffer to render the results
+	glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, render);
+
+	// I don't understand why I have to use this pr, and can't use 0 :-/
+	glUseProgram(pde->pr);
+	//glUseProgram(0);
+	pde->dl_gen(-1, 1, -1, 1);
 	
 	glUseProgram(0);
 		
@@ -250,39 +224,12 @@ void grapher::reshape(int w, int h) {
 // Our keyboard function registered with OpenGL
 GLvoid grapher::keyboard(unsigned char key, int x, int y) {
 	switch (key) {
-		case '+':
-			width *= 2;
-			pde->set_param("width", width);
-			height *= 2;
-			pde->set_param("height", height);
-			break;
-		case '-':
-			width /= 2;
-			pde->set_param("size", width);
-			height /= 2;
-			pde->set_param("height", height);
-			break;
-		case 'a':
-			if (keyboard_options & AXES_KEYS_ON) {
-				display_options = AXES_ON ^ display_options;
-				glutPostRedisplay();
-			}
-			break;
-		case 'g':
-			if (keyboard_options & GRID_KEYS_ON) {
-				display_options = GRID_ON ^ display_options;
-				glutPostRedisplay();
-			}
-			break;
 		case 'q':
 			if (keyboard_options & QUIT_KEYS_ON) {
 				cout << "Quitting." << endl;
 				exit(0);
 				break;
 			}
-		case 'd':
-			glutPostRedisplay();
-			break;
 	}
 	
 	/** If the user has defined their own keyboard event
@@ -305,35 +252,8 @@ void grapher::set_keyboard_function(keyboard_function k) {
 	user_keyboard_function = k;
 }
 
-void grapher::set_click_function(click_function c) {
-	user_click_function = c;
-}
-
 void grapher::set_idle_function(idle_function i) {
 	glutIdleFunc(i);
-}
-
-void grapher::add(primitive& p) {
-	primitives[&p] = glGenLists(1);
-	glNewList(primitives[&p], GL_COMPILE);
-		(&p)->dl_gen(-1, 1, -1, 1);
-	glEndList();
-}
-
-void grapher::remove(primitive& p) {
-	glDeleteLists(primitives[&p], 1);
-	primitives.erase(&p);
-}
-
-void grapher::refresh_dls() {
-	map<primitive*, GLint>::iterator it;
-	for (it = primitives.begin(); it != primitives.end(); ++it) {
-		glDeleteLists(it->second, 1);
-		primitives[it->first] = glGenLists(1);
-		glNewList(primitives[it->first], GL_COMPILE);
-			(*it->first).dl_gen(-1, 1, -1, 1);
-		glEndList();
-	}
 }
 
 double grapher::y_coord_transform(double y) {
@@ -350,11 +270,6 @@ double grapher::x_coord_transform(double x) {
 	} else {
 		return x;
 	}
-}
-
-void grapher::refresh() {
-	// Delete this!
-	refresh_dls();
 }
 
 void grapher::redraw() {
