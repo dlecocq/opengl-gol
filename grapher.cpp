@@ -9,11 +9,7 @@
 using namespace glot;
 using namespace std;
 
-int grapher::initialize(int argc, char ** argv, short int options, short int k_options) {
-	
-	// Set up the options for display and keyboard
-	display_options = options;
-	keyboard_options = k_options;
+int grapher::initialize(int argc, char ** argv) {
 	
 	// Initialize GLUT
 	glutInit(&argc, argv);
@@ -47,10 +43,6 @@ int grapher::initialize(int argc, char ** argv, short int options, short int k_o
 		printf("Not all necessary features are supported :( \n");
 		exit(1);
 	}
-	
-	//init_framebuffer();
-	
-	wall.start();
 	
 	return 0;
 }
@@ -225,41 +217,15 @@ void grapher::reshape(int w, int h) {
 GLvoid grapher::keyboard(unsigned char key, int x, int y) {
 	switch (key) {
 		case 'q':
-			if (keyboard_options & QUIT_KEYS_ON) {
-				cout << "Quitting." << endl;
-				exit(0);
-				break;
-			}
-	}
-}
-
-double grapher::y_coord_transform(double y) {
-	if (Y_LOG & display_options) {
-		return log10(abs(y));
-	} else {
-		return y;
-	}
-}
-
-double grapher::x_coord_transform(double x) {
-	if (X_LOG & display_options) {
-		return pow(10, x);
-	} else {
-		return x;
+			cout << "Quitting." << endl;
+			exit(0);
+			break;
 	}
 }
 
 void grapher::redraw() {
-	if (framecount == 0) {
-		timer.start();
-	}
 	glFinish();
 	glutPostRedisplay();
-	++framecount;
-	if (framecount == 500) {
-		framecount = 0;
-		cout << 500 / timer.stop() << " fps" << endl;
-	}
 }
 
 void grapher::run() {
@@ -272,16 +238,6 @@ void grapher::get_pixels(char* values) {
 
 // Static member variable definition
 // It's terribly ugly, I know
-short int grapher::display_options;
-short int grapher::keyboard_options;
-GLint grapher::axes_dl;
-GLint grapher::grid_dl;
-int grapher::startx;
-int grapher::starty;
-map<primitive*, GLint> grapher::primitives;
-stopwatch grapher::timer;
-stopwatch grapher::wall;
-
 GLuint grapher::fb;
 GLuint grapher::tex;
 GLuint grapher::render;
@@ -292,7 +248,5 @@ int grapher::height;
 primitive* grapher::pde = NULL;
 
 bool grapher::initialized = false;
-
-int grapher::framecount;
 
 #endif

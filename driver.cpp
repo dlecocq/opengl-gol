@@ -13,7 +13,7 @@ color c(1.0, 0.0, 0.0, 0.5);
 
 int main(int argc, char ** argv) {
 	
-	grapher::initialize(argc, argv, X_LIN | Y_LIN | AXES_ON | GRID_ON);
+	grapher::initialize(argc, argv);
 	
 	color col(1.0, 0, 0);
 

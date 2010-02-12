@@ -64,7 +64,6 @@ namespace glot {
 				glUseProgram(pc);
 				location = glGetUniformLocation(pc, param);
 				glUniform1f(location, value);
-				//std::cout << param << " (" << location << ") set to " << value << " in program " << pr << std::endl;
 			}
 
 		protected:

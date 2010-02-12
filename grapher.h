@@ -89,7 +89,7 @@ namespace glot {
 			  * X_LIN, X_LOG (linear x scale or logarithmic)
 			  * Y_LIN, Y_LOG (linear y scale or logarithmic)
 			  */
-			static int initialize(int argc, char ** argv, short int options = AXES_ON | GRID_ON | X_LIN | Y_LIN, short int k_options = ZOOM_KEYS_ON | AXES_KEYS_ON | GRID_KEYS_ON | QUIT_KEYS_ON);
+			static int initialize(int argc, char ** argv);
 		
 			/** \brief Enter the OpenGL main loop after initialization
 			  *
@@ -115,32 +115,6 @@ namespace glot {
 			static primitive* pde;
 
 		private:
-		
-			/**	\brief Transform a y coordinate
-			  *	\param y - the y coordinate to transform
-			  *
-			  * This grapher gives the option of using linear or 
-			  * logarithmic scales, and so this function transforms
-			  * a real (linear) y coordinate into the coordinate
-			  * appropriate for this plot.  If it's linear, it will
-			  * remain linear, but if the plot has a logarithmic y
-			  *	scale, it will be transformed by log10(abs(y)).
-			  */
-			static double y_coord_transform(double y);
-		
-			/**	\brief Transform a x coordinate
-			  *	\param x - the x coordinate to transform
-			  *
-			  * This grapher gives the optiopn of using linear or
-			  *	logarithmic scales, and so this function transforms
-			  * a world x coordinate into the correct plot x
-			  * coordinate.  For example, if X_LOG is active in the
-			  *	display options, then it will transform x to be 
-			  * exp(10, x).
-			  */
-			static double x_coord_transform(double x);
-			
-			//*/
 		
 			/**	\brief Initialize OpenGL
 			  */
@@ -181,38 +155,6 @@ namespace glot {
 			  * that function AFTER it's done.
 			  */
 			static void keyboard(unsigned char key, int x, int y);
-
-			/** \brief The display options for the grapher
-			  *	
-			  *	It's a bitwise or'ing of the options AXES_ON / AXES_OFF,
-			  * GRID_ON / GRID_OFF, etc.
-			  */
-			static short int display_options;
-		
-			/** \brief The default keyboard actions options
-			  *
-			  * It's a bitwise or'ing of the options ZOOM_KEYS_ON /
-			  *	ZOOM_KEYS_OFF, AXES_KEYS_ON / AXES_KEYS_OFF,
-			  *	GRID_KEYS_ON / GRID_KEYS_OFF
-			  */
-			static short int keyboard_options;
-
-			/** The display list for the axes */
-			static GLint axes_dl;
-			/** The display list for the grid */
-			static GLint grid_dl;
-
-			/** For generating click vs. mouse events */
-			static int startx;
-			static int starty;
-		
-			/** All the primitives */
-			static map<primitive*, GLint> primitives;
-			
-			static stopwatch timer;
-			static stopwatch wall;
-			
-			static int framecount;
 			
 			static GLuint fb;
 			static GLuint tex;
