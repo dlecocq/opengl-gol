@@ -7,7 +7,6 @@
 #include <cmath>
 
 #include "shader_primitive.h"
-#include "color.h"
 
 namespace glot {
 

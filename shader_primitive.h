@@ -7,7 +7,6 @@
 #include <GL/glew.h>
 
 #include "primitive.h"
-#include "color.h"
 
 using namespace std;
 
@@ -31,11 +30,6 @@ namespace glot {
 			/** Default constructor
 			  */
 			shader_primitive(short int layout_opt = X_LIN | Y_LIN | CARTESIAN ) : primitive(layout_opt), f(0), g(0), v(0) {};
-			
-			/** Constructor
-			  * \param col - the color of the primitive
-			  */
-			shader_primitive(const color& col, short int layout_opt = X_LIN | Y_LIN | CARTESIAN ) : primitive(col, layout_opt) {};
 			
 			/** Destructor
 				* 

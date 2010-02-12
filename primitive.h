@@ -3,8 +3,6 @@
 
 #include <iostream>
 
-#include "color.h"
-
 namespace glot {
 	
 	enum layout_opt { 
@@ -25,21 +23,10 @@ namespace glot {
 	class primitive {
 	
 		public:
-		
-			/** The color of the the primitive */
-			color c;
 			
 			/** Default constructor
 			  */
-			primitive(short int layout_opt = X_LIN | Y_LIN | CARTESIAN ) : c(color(0, 0, 0, 1)), pc(0), pr(0), layout(layout_opt) {};
-			
-			/** Constructor
-			  * \param col - the color of the primitive 
-			  *
-			  * Initializes the color of the primitive and the
-			  * program GLenum
-			  */
-			primitive(const color& col, short int layout_opt = X_LIN | Y_LIN | CARTESIAN ) : c(col), pc(0), pr(0), layout(layout_opt) {};
+			primitive(short int layout_opt = X_LIN | Y_LIN | CARTESIAN ) : pc(0), pr(0), layout(layout_opt) {};
 			
 			/** Destructor
 			  * 

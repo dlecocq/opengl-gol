@@ -11,8 +11,6 @@
 
 #include "shader_primitive.h"
 #include "scalar_field.h"
-#include "stopwatch.h"
-#include "color.h"
 
 using namespace std;
 
