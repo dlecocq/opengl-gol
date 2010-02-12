@@ -19,7 +19,6 @@ int main(int argc, char ** argv) {
 
 	scalar_field sfp;
 	grapher::pde = &sfp;
-	grapher::set_idle_function(grapher::redraw);
 	grapher::run();
 	
 	return 0;

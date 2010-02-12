@@ -38,7 +38,7 @@ int grapher::initialize(int argc, char ** argv, short int options, short int k_o
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
-	//glutIdleFunc(idle);
+	glutIdleFunc(redraw);
 	
 	glewInit();
 	
@@ -231,29 +231,6 @@ GLvoid grapher::keyboard(unsigned char key, int x, int y) {
 				break;
 			}
 	}
-	
-	/** If the user has defined their own keyboard event
-	  * handler, execute it here, after we've completed
-	  * our own.  They may turn on and off the default
-	  * functionality by changing keyboard_options
-	  */
-	if (user_keyboard_function) {
-		user_keyboard_function(key, x, y);
-	}
-}
-
-void grapher::idle() {
-	if (user_idle_function != NULL) {
-		user_idle_function();
-	}
-}
-
-void grapher::set_keyboard_function(keyboard_function k) {
-	user_keyboard_function = k;
-}
-
-void grapher::set_idle_function(idle_function i) {
-	glutIdleFunc(i);
 }
 
 double grapher::y_coord_transform(double y) {
@@ -302,9 +279,6 @@ GLint grapher::grid_dl;
 int grapher::startx;
 int grapher::starty;
 map<primitive*, GLint> grapher::primitives;
-grapher::keyboard_function grapher::user_keyboard_function;
-grapher::click_function grapher::user_click_function;
-grapher::idle_function grapher::user_idle_function;
 stopwatch grapher::timer;
 stopwatch grapher::wall;
 

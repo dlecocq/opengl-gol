@@ -107,47 +107,6 @@ namespace glot {
 			  * then request a redraw with this function.
 			  */
 			static void redraw();
-				
-			/** \brief Set up a keyboard event handler
-			  *	\param k - the function you'd like to handle key events
-			  *
-			  *	If you'd like to set up a function to handle key events,
-			  * you can register them with this function.  NOTE: there are
-			  * default behaviors for certain keys that are not overridden
-			  * here.  For example, '+' zooms in, but if you use that
-			  * key as well, both a zoom and your operation will take
-			  * place.
-			  *
-			  * The idea behind this is that these default behaviors are
-			  * not the programmer's responsibility to code up as well.
-			  * They are interface freebies.
-			  *
-			  *	Bitwise or options together from the set:
-			  * ZOOM_KEYS_ON / ZOOM_KEYS_OFF
-			  * AXES_KEYS_ON / AXES_KEYS_OFF
-			  * GRID_KEYS_ON / GRID_KEYS_OFF
-			  */
-			static void set_keyboard_function(keyboard_function k);
-		
-			/**	\brief Set up a click event handler
-			  *	\param c - the function you'd like to handle click events
-			  *
-			  * If you'd like to set up a function to handle click events
-			  * (which are when a user presses down and then releases a
-			  * button at the same spot), you can register it with this
-			  * function.  NOTE: this is different from a motion function.
-			  */
-			static void set_click_function(click_function c);
-			
-			/** \brief Set the idle function handler
-			  *
-			  * Animation is done by setting the idle_function handler,
-			  * and this provides the interface.  This might be deprecated
-			  * in favor of an option that just allows the user to turn
-			  * on animation, which would consist of simply setting
-			  * OpenGL's idle function to grapher's display function.
-			  */
-			static void set_idle_function(idle_function i);
 			
 			static GLint get_width()  { return width;  };
 			static GLint get_height() { return height; };
@@ -222,8 +181,6 @@ namespace glot {
 			  * that function AFTER it's done.
 			  */
 			static void keyboard(unsigned char key, int x, int y);
-			
-			static void idle();
 
 			/** \brief The display options for the grapher
 			  *	
@@ -248,14 +205,6 @@ namespace glot {
 			/** For generating click vs. mouse events */
 			static int startx;
 			static int starty;
-		
-			/** The user-defined keyboard-event fuction */
-			static keyboard_function user_keyboard_function;
-		
-			/** The user-defined click-event function */
-			static click_function user_click_function;
-			
-			static idle_function user_idle_function;
 		
 			/** All the primitives */
 			static map<primitive*, GLint> primitives;
