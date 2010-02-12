@@ -26,8 +26,8 @@ int grapher::initialize(int argc, char ** argv, short int options, short int k_o
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
 	
 	// Width and height of plot
-	scr.width  = width  = 700;
-	scr.height = height = 700;
+	scr.width  = width  = glutGet(GLUT_SCREEN_WIDTH);
+	scr.height = height = glutGet(GLUT_SCREEN_HEIGHT) - 100;
 	// Set the window size and position
 	glutInitWindowSize(scr.width, scr.height);
 	glutInitWindowPosition(0, 0);
