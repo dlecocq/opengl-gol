@@ -7,7 +7,7 @@ DEFINES = -DUSE_$(FORMAT)
 
 LIBOPT = -framework GLUT -framework OpenGL -lGLEW
 
-DEPENDENCIES = grapher.o scalar_field.o shader_primitive.o
+DEPENDENCIES = grapher.o gol.o shader_primitive.o
 
 EXECUTABLE = glot
 

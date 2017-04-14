@@ -10,7 +10,7 @@
 #include <map>
 
 #include "shader_primitive.h"
-#include "scalar_field.h"
+#include "gol.h"
 
 using namespace std;
 

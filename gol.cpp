@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "scalar_field.h"
+#include "gol.h"
 
 using namespace glot;
 
